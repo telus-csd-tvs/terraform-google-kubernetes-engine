@@ -45,8 +45,7 @@ control "gcloud" do
       end
 
       it "uses public nodes and master endpoint" do
-        expect(data['privateClusterConfig']['enablePrivateEndpoint']).to eq nil
-        expect(data['privateClusterConfig']['enablePrivateNodes']).to eq nil
+        expect(data['privateClusterConfig']).to eq nil
       end
 
       it "has the expected addon settings" do
@@ -61,6 +60,10 @@ control "gcloud" do
           "networkPolicyConfig" => {
             "disabled" => true,
           },
+          "istioConfig" => {"auth"=>"AUTH_MUTUAL_TLS"},
+          "cloudRunConfig" => including(
+              "loadBalancerType" => "LOAD_BALANCER_TYPE_EXTERNAL",
+            ),
           "dnsCacheConfig" => {
             "enabled" => true,
           },
@@ -78,7 +81,7 @@ control "gcloud" do
 
       it "has the expected binaryAuthorization config" do
         expect(data['binaryAuthorization']).to eq({
-          "evaluationMode" => "PROJECT_SINGLETON_POLICY_ENFORCE",
+          "enabled" => true,
         })
       end
 
@@ -93,24 +96,6 @@ control "gcloud" do
           "state" => 'ENCRYPTED',
           "keyName" => attribute('database_encryption_key_name'),
         })
-      end
-
-      it "has the expected identityServiceConfig config" do
-        expect(data['identityServiceConfig']).to eq({
-          "enabled" => true,
-        })
-      end
-
-      it "has the expected logging config" do
-        expect(data['loggingConfig']['componentConfig']['enableComponents']).to match_array([
-          "SYSTEM_COMPONENTS"
-        ])
-      end
-
-      it "has the expected monitoring config" do
-        expect(data['monitoringConfig']['componentConfig']['enableComponents']).to match_array([
-          "SYSTEM_COMPONENTS"
-        ])
       end
     end
 
@@ -163,7 +148,7 @@ control "gcloud" do
         expect(node_pools).to include(
           including(
             "autoscaling" => including(
-              "maxNodeCount" => 2,
+              "maxNodeCount" => 100,
             ),
           )
         )
@@ -173,7 +158,7 @@ control "gcloud" do
         expect(node_pools).to include(
           including(
             "config" => including(
-              "machineType" => "n2-standard-2",
+              "machineType" => "e2-medium",
             ),
           )
         )
@@ -195,7 +180,7 @@ control "gcloud" do
             "config" => including(
               "labels" => including(
                 "cluster_name" => cluster_name,
-                "node_pool" => "pool-01",
+                "node_pool" => "default-node-pool",
               ),
             ),
           )
@@ -208,7 +193,7 @@ control "gcloud" do
             "config" => including(
               "tags" => match_array([
                 "gke-#{cluster_name}",
-                "gke-#{cluster_name}-pool-01",
+                "gke-#{cluster_name}-default-node-pool",
               ]),
             ),
           )
@@ -220,16 +205,6 @@ control "gcloud" do
           including(
             "management" => including(
               "autoRepair" => true,
-            ),
-          )
-        )
-      end
-
-      it "has placement policy set to COMPACT" do
-        expect(node_pools).to include(
-          including(
-            "placementPolicy" => including(
-              "type" => "COMPACT",
             ),
           )
         )

@@ -15,7 +15,6 @@
 project_id = attribute('project_id')
 location = attribute('location')
 cluster_name = attribute('cluster_name')
-explicit_version = attribute('explicit_k8s_version')
 
 control "gcloud" do
   title "Google Compute Engine GKE configuration"
@@ -36,11 +35,6 @@ control "gcloud" do
         expect(data['status']).to eq 'RUNNING'
       end
 
-      it "has expected explicit version" do
-        expect(data['currentMasterVersion']).to eq explicit_version
-        expect(data['currentNodeVersion']).to eq explicit_version
-      end
-
       it "is regional" do
         expect(data['location']).to match(/^.*[1-9]$/)
       end
@@ -55,6 +49,9 @@ control "gcloud" do
 
       it "has the expected addon settings" do
         expect(data['addonsConfig']).to include(
+            "cloudRunConfig" => including(
+              "loadBalancerType" => "LOAD_BALANCER_TYPE_EXTERNAL",
+            ),
             "horizontalPodAutoscaling" => {},
             "httpLoadBalancing" => {},
             "kubernetesDashboard" => including(
@@ -79,7 +76,7 @@ control "gcloud" do
 
     it "has binary authorization" do
       expect(data['binaryAuthorization']).to eq({
-        "evaluationMode" => "PROJECT_SINGLETON_POLICY_ENFORCE",
+        "enabled" => true,
       })
     end
 

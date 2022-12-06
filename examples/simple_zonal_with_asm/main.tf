@@ -33,7 +33,7 @@ data "google_project" "project" {
 module "gke" {
   source                  = "../../"
   project_id              = var.project_id
-  name                    = "test-prefix-cluster-test-suffix"
+  name                    = "${local.cluster_type}-cluster${var.cluster_name_suffix}"
   regional                = false
   region                  = var.region
   zones                   = var.zones
@@ -44,13 +44,13 @@ module "gke" {
   ip_range_services       = var.ip_range_services
   network_policy          = false
   cluster_resource_labels = { "mesh_id" : "proj-${data.google_project.project.number}" }
-  identity_namespace      = "${var.project_id}.svc.id.goog"
   node_pools = [
     {
       name         = "asm-node-pool"
       autoscaling  = false
       auto_upgrade = true
-      node_count   = 3
+      # ASM requires minimum 4 nodes and e2-standard-4
+      node_count   = 4
       machine_type = "e2-standard-4"
     },
   ]
@@ -58,11 +58,15 @@ module "gke" {
 
 module "asm" {
   source                    = "../../modules/asm"
-  project_id                = var.project_id
   cluster_name              = module.gke.name
-  cluster_location          = module.gke.location
-  multicluster_mode         = "connected"
-  enable_cni                = true
-  enable_fleet_registration = true
-  enable_mesh_feature       = true
+  cluster_endpoint          = module.gke.endpoint
+  project_id                = var.project_id
+  location                  = module.gke.location
+  enable_cluster_roles      = true
+  enable_cluster_labels     = true
+  enable_gcp_apis           = true
+  enable_gcp_components     = true
+  enable_namespace_creation = true
+  options                   = ["envoy-access-log"]
+  outdir                    = "./${module.gke.name}-outdir"
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,17 +23,7 @@ output "cluster_id" {
 
 output "name" {
   description = "Cluster name"
-  value       = local.cluster_name_computed
-  depends_on = [
-    /* Nominally, the cluster name is populated as soon as it is known to Terraform.
-    * However, the cluster may not be in a usable state yet.  Therefore any
-    * resources dependent on the cluster being up will fail to deploy.  With
-    * this explicit dependency, dependent resources can wait for the cluster
-    * to be up.
-    */
-    google_container_cluster.primary,
-    google_container_node_pool.pools,
-  ]
+  value       = local.cluster_name
 }
 
 output "type" {
@@ -118,11 +108,6 @@ output "horizontal_pod_autoscaling_enabled" {
   value       = local.cluster_horizontal_pod_autoscaling_enabled
 }
 
-output "vertical_pod_autoscaling_enabled" {
-  description = "Whether vertical pod autoscaling enabled"
-  value       = local.cluster_vertical_pod_autoscaling_enabled
-}
-
 output "node_pools_names" {
   description = "List of node pools names"
   value       = local.cluster_node_pools_names
@@ -166,14 +151,14 @@ output "peering_name" {
   value       = local.cluster_peering_name
 }
 
-output "cloudrun_enabled" {
-  description = "Whether CloudRun enabled"
-  value       = local.cluster_cloudrun_enabled
-}
-
 output "istio_enabled" {
   description = "Whether Istio is enabled"
   value       = local.cluster_istio_enabled
+}
+
+output "cloudrun_enabled" {
+  description = "Whether CloudRun enabled"
+  value       = local.cluster_cloudrun_enabled
 }
 
 output "dns_cache_enabled" {
@@ -191,9 +176,9 @@ output "intranode_visibility_enabled" {
   value       = local.cluster_intranode_visibility_enabled
 }
 
-output "identity_service_enabled" {
-  description = "Whether Identity Service is enabled"
-  value       = local.cluster_pod_security_policy_enabled
+output "vertical_pod_autoscaling_enabled" {
+  description = "Whether veritical pod autoscaling is enabled"
+  value       = local.cluster_vertical_pod_autoscaling_enabled
 }
 
 output "tpu_ipv4_cidr_block" {

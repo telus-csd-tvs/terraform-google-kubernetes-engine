@@ -35,12 +35,12 @@ control "gcloud" do
 
     describe "cluster-autoscaling" do
       it "has the expected cluster autoscaling settings" do
-        expect(data['autoscaling']).to include({
-            "autoprovisioningNodePoolDefaults" => including({
+        expect(data['autoscaling']).to eq({
+            "autoprovisioningNodePoolDefaults" => {
                 "imageType"=>"COS_CONTAINERD",
                 "oauthScopes" => %w(https://www.googleapis.com/auth/cloud-platform),
                 "serviceAccount" => "default"
-            }),
+            },
             "autoscalingProfile" => "OPTIMIZE_UTILIZATION",
             "enableNodeAutoprovisioning" => true,
             "resourceLimits" => [
@@ -60,7 +60,7 @@ control "gcloud" do
     end
 
     describe "node pools" do
-      let(:node_pools) { data['nodePools'].reject { |p| p['name'] == "default-pool" || p['name'] =~ %r{^nap-.*} } }
+      let(:node_pools) { data['nodePools'].reject { |p| p['name'] == "default-pool" } }
 
       it "has 3" do
         expect(node_pools.count).to eq 3
@@ -147,7 +147,7 @@ control "gcloud" do
               "name" => "pool-01",
               "config" => including(
                 "metadata" => including(
-                  "shutdown-script" => "kubectl --kubeconfig=/var/lib/kubelet/kubeconfig drain --force=true --ignore-daemonsets=true --delete-local-data \"$HOSTNAME\"",
+                  "shutdown-script" => File.open("examples/node_pool/data/shutdown-script.sh").read,
                   "disable-legacy-endpoints" => "false",
                 ),
               ),
@@ -297,7 +297,7 @@ control "gcloud" do
             including(
               "name" => "pool-02",
               "config" => including(
-                "imageType" => "COS_CONTAINERD",
+                "imageType" => "COS",
               ),
             )
           )

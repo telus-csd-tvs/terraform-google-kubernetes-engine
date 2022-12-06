@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,14 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = ">= 4.36.0, < 5.0"
+      version = ">= 4.0.0, < 5.0"
     }
     kubernetes = {
       source  = "hashicorp/kubernetes"
-      version = "~> 2.10"
+      version = "~> 2.0"
     }
   }
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-kubernetes-engine:private-cluster-update-variant/v24.0.0"
+    module_name = "blueprints/terraform/terraform-google-kubernetes-engine:private-cluster-update-variant/v19.0.0"
   }
 }

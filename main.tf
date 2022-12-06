@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,11 +44,10 @@ locals {
   master_version_regional = var.kubernetes_version != "latest" ? var.kubernetes_version : data.google_container_engine_versions.region.latest_master_version
   master_version_zonal    = var.kubernetes_version != "latest" ? var.kubernetes_version : data.google_container_engine_versions.zone.latest_master_version
   master_version          = var.regional ? local.master_version_regional : local.master_version_zonal
+
   // Build a map of maps of node pools from a list of objects
-  node_pool_names         = [for np in toset(var.node_pools) : np.name]
-  node_pools              = zipmap(local.node_pool_names, tolist(toset(var.node_pools)))
-  windows_node_pool_names = [for np in toset(var.windows_node_pools) : np.name]
-  windows_node_pools      = zipmap(local.windows_node_pool_names, tolist(toset(var.windows_node_pools)))
+  node_pool_names = [for np in toset(var.node_pools) : np.name]
+  node_pools      = zipmap(local.node_pool_names, tolist(toset(var.node_pools)))
 
   release_channel = var.release_channel != null ? [{ channel : var.release_channel }] : []
 
@@ -82,6 +81,7 @@ locals {
     provider = null
   }]
 
+
   cluster_authenticator_security_group = var.authenticator_security_group == null ? [] : [{
     security_group = var.authenticator_security_group
   }]
@@ -109,22 +109,14 @@ locals {
   cluster_output_network_policy_enabled             = google_container_cluster.primary.addons_config.0.network_policy_config.0.disabled
   cluster_output_http_load_balancing_enabled        = google_container_cluster.primary.addons_config.0.http_load_balancing.0.disabled
   cluster_output_horizontal_pod_autoscaling_enabled = google_container_cluster.primary.addons_config.0.horizontal_pod_autoscaling.0.disabled
-  cluster_output_vertical_pod_autoscaling_enabled   = google_container_cluster.primary.vertical_pod_autoscaling != null && length(google_container_cluster.primary.vertical_pod_autoscaling) == 1 ? google_container_cluster.primary.vertical_pod_autoscaling.0.enabled : false
 
 
   master_authorized_networks_config = length(var.master_authorized_networks) == 0 ? [] : [{
     cidr_blocks : var.master_authorized_networks
   }]
 
-  cluster_output_node_pools_names = concat(
-    [for np in google_container_node_pool.pools : np.name], [""],
-    [for np in google_container_node_pool.windows_pools : np.name], [""]
-  )
-
-  cluster_output_node_pools_versions = merge(
-    { for np in google_container_node_pool.pools : np.name => np.version },
-    { for np in google_container_node_pool.windows_pools : np.name => np.version },
-  )
+  cluster_output_node_pools_names    = concat([for np in google_container_node_pool.pools : np.name], [""])
+  cluster_output_node_pools_versions = { for np in google_container_node_pool.pools : np.name => np.version }
 
   cluster_master_auth_list_layer1 = local.cluster_output_master_auth
   cluster_master_auth_list_layer2 = local.cluster_master_auth_list_layer1[0]
@@ -134,9 +126,7 @@ locals {
   cluster_region   = var.regional ? var.region : join("-", slice(split("-", local.cluster_location), 0, 2))
   cluster_zones    = sort(local.cluster_output_zones)
 
-  // node pool ID is in the form projects/<project-id>/locations/<location>/clusters/<cluster-name>/nodePools/<nodepool-name>
-  cluster_name_parts_from_nodepool           = split("/", element(values(google_container_node_pool.pools)[*].id, 0))
-  cluster_name_computed                      = element(local.cluster_name_parts_from_nodepool, length(local.cluster_name_parts_from_nodepool) - 3)
+  cluster_name                               = local.cluster_output_name
   cluster_network_tag                        = "gke-${var.name}"
   cluster_ca_certificate                     = local.cluster_master_auth_map["cluster_ca_certificate"]
   cluster_master_version                     = local.cluster_output_master_version
@@ -148,14 +138,11 @@ locals {
   cluster_network_policy_enabled             = !local.cluster_output_network_policy_enabled
   cluster_http_load_balancing_enabled        = !local.cluster_output_http_load_balancing_enabled
   cluster_horizontal_pod_autoscaling_enabled = !local.cluster_output_horizontal_pod_autoscaling_enabled
-  cluster_vertical_pod_autoscaling_enabled   = local.cluster_output_vertical_pod_autoscaling_enabled
   workload_identity_enabled                  = !(var.identity_namespace == null || var.identity_namespace == "null")
   cluster_workload_identity_config = !local.workload_identity_enabled ? [] : var.identity_namespace == "enabled" ? [{
     workload_pool = "${var.project_id}.svc.id.goog" }] : [{ workload_pool = var.identity_namespace
   }]
 
-  cluster_maintenance_window_is_recurring = var.maintenance_recurrence != "" && var.maintenance_end_time != "" ? [1] : []
-  cluster_maintenance_window_is_daily     = length(local.cluster_maintenance_window_is_recurring) > 0 ? [] : [1]
 }
 
 /******************************************

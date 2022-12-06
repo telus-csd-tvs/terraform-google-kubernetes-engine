@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2019 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,6 @@ locals {
       [for node_pool in var.node_pools : node_pool["name"]],
       [for node_pool in var.node_pools : {}]
     ),
-    zipmap(
-      [for node_pool in var.windows_node_pools : node_pool["name"]],
-      [for node_pool in var.windows_node_pools : {}]
-    ),
     var.node_pools_labels
   )
 
@@ -40,10 +36,6 @@ locals {
     zipmap(
       [for node_pool in var.node_pools : node_pool["name"]],
       [for node_pool in var.node_pools : {}]
-    ),
-    zipmap(
-      [for node_pool in var.windows_node_pools : node_pool["name"]],
-      [for node_pool in var.windows_node_pools : {}]
     ),
     var.node_pools_metadata
   )
@@ -55,10 +47,6 @@ locals {
       [for node_pool in var.node_pools : node_pool["name"]],
       [for node_pool in var.node_pools : []]
     ),
-    zipmap(
-      [for node_pool in var.windows_node_pools : node_pool["name"]],
-      [for node_pool in var.windows_node_pools : []]
-    ),
     var.node_pools_taints
   )
 
@@ -69,10 +57,6 @@ locals {
       [for node_pool in var.node_pools : node_pool["name"]],
       [for node_pool in var.node_pools : []]
     ),
-    zipmap(
-      [for node_pool in var.windows_node_pools : node_pool["name"]],
-      [for node_pool in var.windows_node_pools : []]
-    ),
     var.node_pools_tags
   )
 
@@ -82,10 +66,6 @@ locals {
     zipmap(
       [for node_pool in var.node_pools : node_pool["name"]],
       [for node_pool in var.node_pools : []]
-    ),
-    zipmap(
-      [for node_pool in var.windows_node_pools : node_pool["name"]],
-      [for node_pool in var.windows_node_pools : []]
     ),
     var.node_pools_oauth_scopes
   )

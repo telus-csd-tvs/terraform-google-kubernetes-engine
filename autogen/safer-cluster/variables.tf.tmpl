@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -107,24 +107,6 @@ variable "maintenance_start_time" {
   default     = "05:00"
 }
 
-variable "maintenance_exclusions" {
-  type        = list(object({ name = string, start_time = string, end_time = string, exclusion_scope = string }))
-  description = "List of maintenance exclusions. A cluster can have up to three"
-  default = []
-}
-
-variable "maintenance_end_time" {
-  type        = string
-  description = "Time window specified for recurring maintenance operations in RFC3339 format"
-  default     = ""
-}
-
-variable "maintenance_recurrence" {
-  type        = string
-  description = "Frequency of the recurring maintenance window in RFC5545 format."
-  default     = ""
-}
-
 variable "ip_range_pods" {
   type        = string
   description = "The _name_ of the secondary subnet ip range to use for pods"
@@ -150,12 +132,6 @@ variable "node_pools" {
       name = "default-node-pool"
     },
   ]
-}
-
-variable "windows_node_pools" {
-  type        = list(map(string))
-  description = "List of maps containing node pools"
-  default = []
 }
 
 variable "node_pools_labels" {
@@ -208,28 +184,6 @@ variable "node_pools_oauth_scopes" {
   }
 }
 
-variable "cluster_autoscaling" {
-  type = object({
-    enabled             = bool
-    autoscaling_profile = string
-    min_cpu_cores       = number
-    max_cpu_cores       = number
-    min_memory_gb       = number
-    max_memory_gb       = number
-    gpu_resources       = list(object({ resource_type = string, minimum = number, maximum = number }))
-  })
-  default = {
-    enabled             = false
-    autoscaling_profile = "BALANCED"
-    max_cpu_cores       = 0
-    min_cpu_cores       = 0
-    max_memory_gb       = 0
-    min_memory_gb       = 0
-    gpu_resources       = []
-  }
-  description = "Cluster autoscaling configuration. See [more details](https://cloud.google.com/kubernetes-engine/docs/reference/rest/v1beta1/projects.locations.clusters#clusterautoscaling)"
-}
-
 variable "stub_domains" {
   type        = map(list(string))
   description = "Map of stub domains and their resolvers to forward DNS queries for a certain domain to an external DNS server"
@@ -252,12 +206,6 @@ variable "monitoring_service" {
   type        = string
   description = "The monitoring service that the cluster should write metrics to. Automatically send metrics from pods in the cluster to the Google Cloud Monitoring API. VM metrics will be collected by Google Compute Engine regardless of this setting Available options include monitoring.googleapis.com, monitoring.googleapis.com/kubernetes (beta) and none"
   default     = "monitoring.googleapis.com/kubernetes"
-}
-
-variable "monitoring_enable_managed_prometheus" {
-  type        = bool
-  description = "(Beta) Configuration for Managed Service for Prometheus. Whether or not the managed collection is enabled."
-  default     = false
 }
 
 variable "grant_registry_access" {
@@ -301,24 +249,6 @@ variable "dns_cache" {
   default     = false
 }
 
-variable "cluster_dns_provider" {
-  type        = string
-  description = "Which in-cluster DNS provider should be used. PROVIDER_UNSPECIFIED (default) or PLATFORM_DEFAULT or CLOUD_DNS."
-  default     = "PROVIDER_UNSPECIFIED"
-}
-
-variable "cluster_dns_scope" {
-  type        = string
-  description = "The scope of access to cluster DNS records. DNS_SCOPE_UNSPECIFIED (default) or CLUSTER_SCOPE or VPC_SCOPE. "
-  default     = "DNS_SCOPE_UNSPECIFIED"
-}
-
-variable "cluster_dns_domain" {
-  type        = string
-  description = "The suffix used for all cluster service records."
-  default     = ""
-}
-
 variable "default_max_pods_per_node" {
   description = "The maximum number of pods to schedule per node"
   default     = 110
@@ -354,12 +284,6 @@ variable "enable_resource_consumption_export" {
   type        = bool
   description = "Whether to enable resource consumption metering on this cluster. When enabled, a table will be created in the resource export BigQuery dataset to store resource consumption data. The resulting table can be joined with the resource usage table or with BigQuery billing export."
   default     = true
-}
-
-variable "enable_cost_allocation" {
-  type        = bool
-  description = "Enables Cost Allocation Feature and the cluster name and namespace of your GKE workloads appear in the labels field of the billing export to BigQuery"
-  default     = false
 }
 
 variable "sandbox_enabled" {
@@ -422,12 +346,6 @@ variable "gce_pd_csi_driver" {
   default     = true
 }
 
-variable "filestore_csi_driver" {
-  type        = bool
-  description = "The status of the Filestore CSI driver addon, which allows the usage of filestore instance as volumes"
-  default     = false
-}
-
 variable "add_cluster_firewall_rules" {
   type        = bool
   description = "Create additional firewall rules"
@@ -449,12 +367,6 @@ variable "firewall_inbound_ports" {
 variable "config_connector" {
   type        = bool
   description = "(Beta) Whether ConfigConnector is enabled for this cluster."
-  default     = false
-}
-
-variable "gke_backup_agent_config" {
-  type        = bool
-  description = "(Beta) Whether Backup for GKE agent is enabled for this cluster."
   default     = false
 }
 

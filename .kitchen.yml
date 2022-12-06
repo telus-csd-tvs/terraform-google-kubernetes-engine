@@ -15,7 +15,6 @@
 driver:
   name: "terraform"
   command_timeout: 2700
-  verify_version: false
 
 provisioner:
   name: "terraform"
@@ -201,19 +200,6 @@ suites:
           backend: gcp
           controls:
             - gcp
-  - name: "simple_windows_node_pool"
-    driver:
-      root_module_directory: test/fixtures/simple_windows_node_pool
-    verifier:
-      systems:
-        - name: gcloud
-          backend: local
-          controls:
-            - gcloud
-        - name: gcp
-          backend: gcp
-          controls:
-            - gcp
   - name: "deploy_service"
     driver:
       root_module_directory: test/fixtures/deploy_service
@@ -258,17 +244,3 @@ suites:
           controls:
             - gcloud
             - kubectl
-  - name: "simple_autopilot_private"
-    driver:
-      root_module_directory: test/fixtures/simple_autopilot_private
-    verifier:
-      systems:
-        - name: simple_autopilot_private
-          backend: local
-  - name: "simple_autopilot_public"
-    driver:
-      root_module_directory: test/fixtures/simple_autopilot_public
-    verifier:
-      systems:
-        - name: simple_autopilot_public
-          backend: local

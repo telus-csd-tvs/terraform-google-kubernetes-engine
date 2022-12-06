@@ -16,20 +16,9 @@
  */
 
 terraform {
-  required_version = ">= 0.14.0"
-
-  required_providers {
-    kubernetes = {
-      source  = "hashicorp/kubernetes"
-      version = "~> 2.0"
-    }
-  }
+  required_version = ">= 0.13.0"
 
   provider_meta "google" {
-    module_name = "blueprints/terraform/terraform-google-kubernetes-engine:asm/v24.0.0"
-  }
-
-  provider_meta "google-beta" {
-    module_name = "blueprints/terraform/terraform-google-kubernetes-engine:asm/v24.0.0"
+    module_name = "blueprints/terraform/terraform-google-kubernetes-engine:asm/v19.0.0"
   }
 }

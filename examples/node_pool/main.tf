@@ -37,7 +37,7 @@ module "gke" {
   ip_range_pods                     = var.ip_range_pods
   ip_range_services                 = var.ip_range_services
   create_service_account            = false
-  remove_default_node_pool          = false
+  remove_default_node_pool          = true
   disable_legacy_metadata_endpoints = false
   cluster_autoscaling               = var.cluster_autoscaling
 
@@ -60,6 +60,7 @@ module "gke" {
       accelerator_count  = 1
       accelerator_type   = "nvidia-tesla-a100"
       gpu_partition_size = "1g.5gb"
+      image_type         = "COS"
       auto_repair        = false
       service_account    = var.compute_engine_service_account
     },
@@ -81,7 +82,7 @@ module "gke" {
 
   node_pools_metadata = {
     pool-01 = {
-      shutdown-script = "kubectl --kubeconfig=/var/lib/kubelet/kubeconfig drain --force=true --ignore-daemonsets=true --delete-local-data \"$HOSTNAME\""
+      shutdown-script = file("${path.module}/data/shutdown-script.sh")
     }
   }
 

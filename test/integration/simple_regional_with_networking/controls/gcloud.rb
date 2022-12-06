@@ -40,8 +40,7 @@ control "gcloud" do
       end
 
       it "uses public nodes and master endpoint" do
-        expect(data['privateClusterConfig']['enablePrivateEndpoint']).to eq nil
-        expect(data['privateClusterConfig']['enablePrivateNodes']).to eq nil
+        expect(data['privateClusterConfig']).to eq nil
       end
 
       it "has the expected addon settings" do

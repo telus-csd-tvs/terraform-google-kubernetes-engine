@@ -25,12 +25,15 @@ module "example" {
   ip_range_pods                  = google_compute_subnetwork.main.secondary_ip_range[0].range_name
   ip_range_services              = google_compute_subnetwork.main.secondary_ip_range[1].range_name
   compute_engine_service_account = var.compute_engine_service_accounts[0]
+  istio                          = false
+  cloudrun                       = false
   sandbox_enabled                = true
   remove_default_node_pool       = true
 
   node_pools = [
     {
       name         = "default-node-pool"
+      image_type   = "COS_CONTAINERD"
       machine_type = "n1-standard-2"
     },
   ]

@@ -25,16 +25,6 @@
   },
   {
     "template_folder": "./autogen/main",
-    "path": "./modules/beta-autopilot-private-cluster",
-    "options": {
-      "module_path": "//modules/beta-autopilot-private-cluster",
-      "private_cluster": true,
-      "autopilot_cluster": true,
-      "beta_cluster": true
-    }
-  },
-  {
-    "template_folder": "./autogen/main",
     "path": "./modules/private-cluster-update-variant",
     "options": {
       "module_path": "//modules/private-cluster-update-variant",
@@ -58,16 +48,6 @@
     "options": {
       "module_path": "//modules/beta-public-cluster",
       "private_cluster": false,
-      "beta_cluster": true
-    }
-  },
-  {
-    "template_folder": "./autogen/main",
-    "path": "./modules/beta-autopilot-public-cluster",
-    "options": {
-      "module_path": "//modules/beta-autopilot-public-cluster",
-      "private_cluster": false,
-      "autopilot_cluster": true,
       "beta_cluster": true
     }
   },

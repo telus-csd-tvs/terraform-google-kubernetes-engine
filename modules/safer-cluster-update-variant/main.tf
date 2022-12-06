@@ -1,5 +1,5 @@
 /**
- * Copyright 2022 Google LLC
+ * Copyright 2018 Google LLC
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -72,18 +72,14 @@ module "gke" {
   datapath_provider = var.datapath_provider
 
   maintenance_start_time = var.maintenance_start_time
-  maintenance_end_time   = var.maintenance_end_time
-  maintenance_recurrence = var.maintenance_recurrence
-  maintenance_exclusions = var.maintenance_exclusions
 
-  // We suggest removing the default node pool, as it cannot be modified without
+  initial_node_count = var.initial_node_count
+
+  // We suggest removing the default node pull, as it cannot be modified without
   // destroying the cluster.
   remove_default_node_pool = true
-  // If removing the default node pool, initial_node_count should be at least 1.
-  initial_node_count = (var.initial_node_count == 0) ? 1 : var.initial_node_count
 
   node_pools          = var.node_pools
-  windows_node_pools  = var.windows_node_pools
   node_pools_labels   = var.node_pools_labels
   node_pools_metadata = var.node_pools_metadata
   node_pools_taints   = var.node_pools_taints
@@ -91,15 +87,11 @@ module "gke" {
 
   node_pools_oauth_scopes = var.node_pools_oauth_scopes
 
-  cluster_autoscaling = var.cluster_autoscaling
-
   stub_domains         = var.stub_domains
   upstream_nameservers = var.upstream_nameservers
 
   logging_service    = var.logging_service
   monitoring_service = var.monitoring_service
-
-  monitoring_enable_managed_prometheus = var.monitoring_enable_managed_prometheus
 
   // We never use the default service account for the cluster. The default
   // project/editor permissions can create problems if nodes were to be ever
@@ -107,7 +99,7 @@ module "gke" {
 
   // We either:
   // - Create a dedicated service account with minimal permissions to run nodes.
-  //   All applications should run with an identity defined via Workload Identity anyway.
+  //   All applications shuold run with an identity defined via Workload Identity anyway.
   // - Use a service account passed as a parameter to the module, in case the user
   //   wants to maintain control of their service accounts.
   create_service_account = var.compute_engine_service_account == "" ? true : false
@@ -140,15 +132,7 @@ module "gke" {
 
   dns_cache = var.dns_cache
 
-
-  config_connector        = var.config_connector
-  gke_backup_agent_config = var.gke_backup_agent_config
-
-  cluster_dns_provider = var.cluster_dns_provider
-
-  cluster_dns_scope = var.cluster_dns_scope
-
-  cluster_dns_domain = var.cluster_dns_domain
+  config_connector = var.config_connector
 
   default_max_pods_per_node = var.default_max_pods_per_node
 
@@ -156,9 +140,6 @@ module "gke" {
 
   // We suggest to define policies about  which images can run on a cluster.
   enable_binary_authorization = true
-
-  // Enable cost allocation support
-  enable_cost_allocation = var.enable_cost_allocation
 
   // Use of PodSecurityPolicy admission controller
   // https://cloud.google.com/kubernetes-engine/docs/how-to/pod-security-policies
@@ -184,8 +165,7 @@ module "gke" {
 
   skip_provisioners = var.skip_provisioners
 
-  gce_pd_csi_driver    = var.gce_pd_csi_driver
-  filestore_csi_driver = var.filestore_csi_driver
+  gce_pd_csi_driver = var.gce_pd_csi_driver
 
   notification_config_topic = var.notification_config_topic
 }

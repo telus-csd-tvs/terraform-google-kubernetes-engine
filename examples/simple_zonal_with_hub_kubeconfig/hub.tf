@@ -15,7 +15,7 @@
  */
 
 module "hub" {
-  source                  = "../../modules/hub-legacy"
+  source                  = "../../modules/hub"
   project_id              = var.project_id
   location                = "remote"
   cluster_name            = kind_cluster.test-cluster.name
