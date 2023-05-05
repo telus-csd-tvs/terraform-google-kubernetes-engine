@@ -105,7 +105,7 @@ echo -e "CERT_CHAIN is $CERT_CHAIN"
 #download the correct version of the install_asm script
 # if [[ "${ASM_GIT_TAG}" = "none" ]]; then
 echo -e "Downloading install_asm with latest git tag..."
-curl https://storage.googleapis.com/csm-artifacts/asm/asmcli_1.13 > asmcli
+curl https://storage.googleapis.com/csm-artifacts/asm/asmcli_1.15 > asmcli
 chmod u+x asmcli
 # else
 #     ASM_GIT_TAG_FIXED=$(sed 's/+/-/g' <<<"$ASM_GIT_TAG")
