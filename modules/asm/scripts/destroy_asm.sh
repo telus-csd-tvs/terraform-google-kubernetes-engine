@@ -15,6 +15,9 @@
 # limitations under the License.
 
 set -e
-
-kubectl delete ns asm-system istio-system --ignore-not-found
+kubectl label namespaces --all istio.io/rev-
+kubectl label namespaces --all istio-injection-
+kubectl delete controlplanerevision --all -n istio-system
+kubectl delete validatingwebhookconfiguration,mutatingwebhookconfiguration -l operator.istio.io/component=Pilot
+kubectl delete ns asm-system istio-system --ignore-not-found=true
 kubectl label namespaces --all istio-injection-

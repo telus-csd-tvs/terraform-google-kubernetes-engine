@@ -103,16 +103,9 @@ echo -e "CA_KEY is $CA_KEY"
 echo -e "ROOT_CERT is $ROOT_CERT"
 echo -e "CERT_CHAIN is $CERT_CHAIN"
 #download the correct version of the install_asm script
-# if [[ "${ASM_GIT_TAG}" = "none" ]]; then
-echo -e "Downloading install_asm with latest git tag..."
-curl https://storage.googleapis.com/csm-artifacts/asm/asmcli_1.15 > asmcli
+echo -e "Downloading asmcli version ${ASM_VERSION}..."
+curl https://storage.googleapis.com/csm-artifacts/asm/asmcli_"${ASM_VERSION}" > asmcli
 chmod u+x asmcli
-# else
-#     ASM_GIT_TAG_FIXED=$(sed 's/+/-/g' <<<"$ASM_GIT_TAG")
-#     echo -e "Downloading install_asm with git tag $ASM_GIT_TAG..."
-#     curl https://storage.googleapis.com/csm-artifacts/asm/install_asm_"${ASM_GIT_TAG_FIXED}" > install_asm_"${ASM_VERSION}"
-#     chmod u+x install_asm_"${ASM_VERSION}"
-# fi
 
 # Craft MCP section for install_asm
 if [[ "${MCP}" = true ]]; then
