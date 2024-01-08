@@ -76,7 +76,7 @@ module "asm-services" {
     "monitoring.googleapis.com",
     "logging.googleapis.com",
     "cloudtrace.googleapis.com",
-    "meshtelemetry.googleapis.com",
+    #"meshtelemetry.googleapis.com",
     "meshconfig.googleapis.com",
     "meshca.googleapis.com",
     "iamcredentials.googleapis.com",
