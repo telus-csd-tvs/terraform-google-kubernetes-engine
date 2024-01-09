@@ -105,7 +105,7 @@ echo -e "CERT_CHAIN is $CERT_CHAIN"
 #download the correct version of the install_asm script
 # if [[ "${ASM_GIT_TAG}" = "none" ]]; then
 echo -e "Downloading install_asm with latest git tag..."
-curl https://storage.googleapis.com/csm-artifacts/asm/asmcli_1.13 > asmcli
+curl https://storage.googleapis.com/csm-artifacts/asm/asmcli_1.17 > asmcli
 chmod u+x asmcli
 # else
 #     ASM_GIT_TAG_FIXED=$(sed 's/+/-/g' <<<"$ASM_GIT_TAG")
@@ -208,6 +208,7 @@ if [[ "${REVISION_NAME}" == "none" ]]; then
 else
     REVISION_NAME_COMMAND_SNIPPET="--revision_name ${REVISION_NAME}"
 fi
+
 
 # Echo the command before executing
 echo -e "asmcli install --verbose --project_id ${PROJECT_ID} --cluster_name ${CLUSTER_NAME} --cluster_location ${CLUSTER_LOCATION} --mode ${MODE} ${MCP_COMMAND_SNIPPET} ${OPTIONS_COMMAND_SNIPPET} ${CUSTOM_OVERLAYS_COMMAND_SNIPPET} ${OUTDIR_COMMAND_SNIPPET} ${ENABLE_ALL_COMMAND_SNIPPET} ${ENABLE_CLUSTER_ROLES_COMMAND_SNIPPET} ${ENABLE_CLUSTER_LABELS_COMMAND_SNIPPET} ${ENABLE_GCP_COMPONENTS_COMMAND_SNIPPET} ${ENABLE_REGISTRATION_COMMAND_SNIPPET} ${ENABLE_NAMESPACE_CREATION_COMMAND_SNIPPET} ${CA_COMMAND_SNIPPET} ${CA_CERTS_COMMAND_SNIPPET} ${SERVICE_ACCOUNT_COMMAND_SNIPPET} ${KEY_FILE_COMMAND_SNIPPET} ${REVISION_NAME_COMMAND_SNIPPET}"
