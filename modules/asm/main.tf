@@ -96,7 +96,7 @@ module "asm_install" {
 
   gcloud_sdk_version          = var.gcloud_sdk_version
   upgrade                     = true
-  additional_components       = ["kpt", "beta"]
+  additional_components       = ["kubectl", "kpt", "beta"]
   cluster_name                = var.cluster_name
   cluster_location            = var.location
   project_id                  = var.project_id
