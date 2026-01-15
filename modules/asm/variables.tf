@@ -37,7 +37,7 @@ variable "location" {
 variable "gcloud_sdk_version" {
   description = "The gcloud sdk version to use. Minimum required version is 293.0.0"
   type        = string
-  default     = "500.0.0"
+  default     = "296.0.1"
 }
 
 # variable "asm_dir" {
